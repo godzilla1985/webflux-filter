@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public class AddBeanInContextFilter implements WebFilter {
 
-    private static final String ENRICH_HEADER_PREFIX = "X-ENRICH";
+    private static final String ENRICH_HEADER_PREFIX = "X-ENRICH-A";
     private static final String CONTEXT_MAP = "context-map";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -30,20 +30,21 @@ public class AddBeanInContextFilter implements WebFilter {
                 .contextWrite(
                         ctx -> addRequestHeadersToContext(ex.getRequest(), ctx)
                 );
+
     }
 
     private Context addRequestHeadersToContext(final ServerHttpRequest request, final Context context) {
-        //Creating map and fill the map from request headers that starts from enrich prefix
-        final Map<String, Object> contextMap = request
+        final Map<String, TestDto> contextMap = request
                 .getHeaders().toSingleValueMap().entrySet()
                 .stream()
                 .filter(x -> x.getKey().startsWith(ENRICH_HEADER_PREFIX))
                 .collect(toMap( Map.Entry::getKey, v -> getObjectFromJson(getJson(v.getValue()))));
-        return context.put(CONTEXT_MAP, contextMap);
+                log.info(contextMap.toString());
+        return context.put(ENRICH_HEADER_PREFIX,contextMap.get(ENRICH_HEADER_PREFIX));
     }
 
     @SneakyThrows
-    private static Object getObjectFromJson(String json) {
+    private static TestDto getObjectFromJson(String json) {
         return objectMapper.readValue(json, TestDto.class);
     }
 
