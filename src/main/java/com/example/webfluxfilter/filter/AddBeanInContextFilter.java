@@ -19,8 +19,9 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public class AddBeanInContextFilter implements WebFilter {
 
+    private static final String PREFIX_FOR_ADDING = "X-ENRICH";
     private static final String ENRICH_HEADER_PREFIX = "X-ENRICH-A";
-    private static final String CONTEXT_MAP = "context-map";
+    /*private static final String CONTEXT_MAP = "context-map";*/
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
