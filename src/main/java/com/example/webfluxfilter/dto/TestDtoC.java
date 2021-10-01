@@ -1,6 +1,5 @@
 package com.example.webfluxfilter.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnrichedGreetingDto {
+public class TestDtoC implements Enrichment{
 
-    private String name;
-    private TestDtoA enrichedObject;
+    private String exceptionName;
+    private boolean disable;
 
 }

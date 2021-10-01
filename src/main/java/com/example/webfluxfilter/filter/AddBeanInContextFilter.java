@@ -1,6 +1,9 @@
 package com.example.webfluxfilter.filter;
 
-import com.example.webfluxfilter.dto.TestDto;
+import com.example.webfluxfilter.dto.Enrichment;
+import com.example.webfluxfilter.dto.TestDtoA;
+import com.example.webfluxfilter.dto.TestDtoB;
+import com.example.webfluxfilter.dto.TestDtoC;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +22,14 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public class AddBeanInContextFilter implements WebFilter {
 
+    private static final Map<String, Class<?>> DICTIONARY = Map.ofEntries(
+            Map.entry("X-ENRICH-A", TestDtoA.class),
+            Map.entry("X-ENRICH-B", TestDtoB.class),
+            Map.entry("X-ENRICH-C", TestDtoC.class));
+
+    private static final String ENRICHMENTS_MAP = "ENRICHMENTS-MAP";
+
     private static final String PREFIX_FOR_ADDING = "X-ENRICH";
-    private static final String ENRICH_HEADER_PREFIX = "X-ENRICH-A";
-    /*private static final String CONTEXT_MAP = "context-map";*/
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -31,22 +39,21 @@ public class AddBeanInContextFilter implements WebFilter {
                 .contextWrite(
                         ctx -> addRequestHeadersToContext(ex.getRequest(), ctx)
                 );
-
     }
 
     private Context addRequestHeadersToContext(final ServerHttpRequest request, final Context context) {
-        final Map<String, TestDto> contextMap = request
+        final Map<String, Enrichment> contextMap = request
                 .getHeaders().toSingleValueMap().entrySet()
                 .stream()
-                .filter(x -> x.getKey().startsWith(ENRICH_HEADER_PREFIX))
-                .collect(toMap( Map.Entry::getKey, v -> getObjectFromJson(getJson(v.getValue()))));
-                log.info(contextMap.toString());
-        return context.put(ENRICH_HEADER_PREFIX,contextMap.get(ENRICH_HEADER_PREFIX));
+                .filter(x -> x.getKey().startsWith(PREFIX_FOR_ADDING))
+                .collect(toMap(Map.Entry::getKey, entry -> getObjectFromJson(getJson(entry.getValue()), entry.getKey())));
+        log.info(contextMap.toString());
+        return context.put(ENRICHMENTS_MAP, contextMap);
     }
 
     @SneakyThrows
-    private static TestDto getObjectFromJson(String json) {
-        return objectMapper.readValue(json, TestDto.class);
+    private static Enrichment getObjectFromJson(String json, String HeaderName) {
+        return (Enrichment) objectMapper.readValue(json, DICTIONARY.get(HeaderName));
     }
 
     private static String getJson(String encodedString) {
