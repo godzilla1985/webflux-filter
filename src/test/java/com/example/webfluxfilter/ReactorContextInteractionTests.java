@@ -8,13 +8,6 @@ public class ReactorContextInteractionTests {
 
 
     @Test
-    void mergeTwoDifferentMono() {
-       /* Mono<EnrichedGreetingDto> enrich = Mono.just(new EnrichedGreetingDto("eli", null));
-        Mono<TestDto> test = Mono.just(new TestDto(true, "qwerty", "asdfg"));
-
-
-        log.info("Result is {}", res.subscribe());*/
-
-    }
+    void mergeTwoDifferentMono() {}
 
 }

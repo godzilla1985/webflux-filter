@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("api")
 @AllArgsConstructor
@@ -35,7 +33,7 @@ public class GreetingController {
     }
 
     @GetMapping("enrichments")
-    public Flux<Enrichment> getAllEnrichments(){
+    public Flux<Enrichment> getAllEnrichments() {
         return greetingService.getAllEnrichments();
     }
 
