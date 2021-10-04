@@ -27,8 +27,6 @@ public class AddBeanInContextFilter implements WebFilter {
             Map.entry("X-ENRICH-B", TestDtoB.class),
             Map.entry("X-ENRICH-C", TestDtoC.class));
 
-    private static final String ENRICHMENTS_MAP = "ENRICHMENTS-MAP";
-
     private static final String PREFIX_FOR_ADDING = "X-ENRICH";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -41,15 +39,19 @@ public class AddBeanInContextFilter implements WebFilter {
                 );
     }
 
-    private Context addRequestHeadersToContext(final ServerHttpRequest request, final Context context) {
-        final Map<String, Enrichment> contextMap = request
+    private Context addRequestHeadersToContext(final ServerHttpRequest request, Context context) {
+        final Map<String, String> contextMap = request
                 .getHeaders().toSingleValueMap().entrySet()
                 .stream()
                 .filter(x -> x.getKey().startsWith(PREFIX_FOR_ADDING))
-                .collect(toMap(Map.Entry::getKey, entry -> getObjectFromJson(getJson(entry.getValue()), entry.getKey())));
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
         log.info(contextMap.toString());
-        return context.put(ENRICHMENTS_MAP, contextMap);
+        for (Map.Entry<String, String> entry : contextMap.entrySet()) {
+            context = context.put(entry.getKey(), getObjectFromJson(getJson(entry.getValue()), entry.getKey()));
+        }
+        return context;
     }
+
 
     @SneakyThrows
     private static Enrichment getObjectFromJson(String json, String HeaderName) {

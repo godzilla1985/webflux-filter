@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.context.ContextView;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -34,20 +34,17 @@ public class GreetingServiceImpl implements GreetingService {
 
 
     private Flux<Enrichment> getBeanFromContext(ContextView contextView) {
-        Map<String, Enrichment> enrichmentMap = contextView.get("ENRICHMENTS-MAP");
-        Collection<Enrichment> enrichmentList = enrichmentMap.values();
+        Collection<Enrichment> enrichmentList = contextView.stream().map(entry -> ((Enrichment) entry.getValue())).collect(Collectors.toList());
         return Flux.fromIterable(enrichmentList);
     }
 
     private Mono<TestDtoA> getBeanTestDtoFromContext(ContextView contextView) {
-        Map<String, Enrichment> enrichmentMap = contextView.get("ENRICHMENTS-MAP");
-        TestDtoA testDtoA = (TestDtoA) enrichmentMap.get("X-ENRICH-A");
+        TestDtoA testDtoA = contextView.get("X-ENRICH-A");
         return Mono.just(testDtoA);
     }
 
     private Mono<EnrichedGreetingDto> getBeanFromContext(ContextView contextView, String name) {
-        Map<String, Enrichment> enrichmentMap = contextView.get("ENRICHMENTS-MAP");
-        return Mono.just(new EnrichedGreetingDto(name, (TestDtoA) enrichmentMap.get("X-ENRICH-A")));
+        return Mono.just(new EnrichedGreetingDto(name, contextView.get("X-ENRICH-A")));
     }
 
 
