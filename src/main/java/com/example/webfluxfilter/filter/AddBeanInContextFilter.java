@@ -1,9 +1,6 @@
 package com.example.webfluxfilter.filter;
 
-import com.example.webfluxfilter.dto.Enrichment;
-import com.example.webfluxfilter.dto.TestDtoA;
-import com.example.webfluxfilter.dto.TestDtoB;
-import com.example.webfluxfilter.dto.TestDtoC;
+import com.example.webfluxfilter.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,8 @@ public class AddBeanInContextFilter implements WebFilter {
     private static final Map<String, Class<?>> DICTIONARY = Map.ofEntries(
             Map.entry("X-ENRICH-A", TestDtoA.class),
             Map.entry("X-ENRICH-B", TestDtoB.class),
-            Map.entry("X-ENRICH-C", TestDtoC.class));
+            Map.entry("X-ENRICH-C", TestDtoC.class),
+            Map.entry("X-ENRICH-D", TestDtoD.class));
 
     private static final String PREFIX_FOR_ADDING = "X-ENRICH";
 
