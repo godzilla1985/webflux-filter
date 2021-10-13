@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestDto {
+public class TestDtoD implements Enrichment {
 
-    private boolean status;
-    private String name;
-    private String data;
+    ArrayList<TestDtoB> messages = new ArrayList<>();
 
 }
