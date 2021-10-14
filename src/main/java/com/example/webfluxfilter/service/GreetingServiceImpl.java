@@ -1,5 +1,7 @@
 package com.example.webfluxfilter.service;
 
+import com.example.webfluxfilter.dto.EnrichedGreetingDto;
+import com.example.webfluxfilter.dto.Enrichment;
 import com.example.webfluxfilter.dto.TestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,10 +14,11 @@ import reactor.core.publisher.Mono;
 public class GreetingServiceImpl implements GreetingService {
 
 
-    public Mono<TestDto> getGreeting(String name, TestDto testDto) {
+    public Mono<Enrichment> getGreeting(String name, TestDto testDto, EnrichedGreetingDto enrichedGreetingDto) {
         log.info("The greeting message to {}", name);
-//        return Mono.just(new TestDto(true, name, LocalDateTime.now().toString()));
-        return Mono.just(testDto);
+        log.info(testDto.toString());
+        log.info(enrichedGreetingDto.toString());
+        return Mono.just(enrichedGreetingDto);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.example.webfluxfilter.controller;
 
 import com.example.webfluxfilter.annotation.Enrich;
+import com.example.webfluxfilter.dto.EnrichedGreetingDto;
+import com.example.webfluxfilter.dto.Enrichment;
 import com.example.webfluxfilter.dto.TestDto;
 import com.example.webfluxfilter.service.GreetingService;
 import lombok.AllArgsConstructor;
@@ -18,10 +20,13 @@ import reactor.core.publisher.Mono;
 public class GreetingController {
 
     private final GreetingService greetingService;
+    
 
     @GetMapping("greeting/{name}")
-    public Mono<TestDto> getName(@PathVariable String name, @Enrich TestDto testDto) {
-        return greetingService.getGreeting(name, testDto);
+    public Mono<Enrichment> getName(@PathVariable String name,
+                                    @Enrich(type = "test-a") TestDto testDto,
+                                    @Enrich(type = "test-b")EnrichedGreetingDto enrichedGreetingDto) {
+        return greetingService.getGreeting(name, testDto, enrichedGreetingDto);
     }
 
 

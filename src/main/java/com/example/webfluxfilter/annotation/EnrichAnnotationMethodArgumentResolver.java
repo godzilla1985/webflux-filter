@@ -1,13 +1,13 @@
 package com.example.webfluxfilter.annotation;
 
+import com.example.webfluxfilter.dto.EnrichedGreetingDto;
 import com.example.webfluxfilter.dto.Enrichment;
 import com.example.webfluxfilter.dto.TestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.javatuples.Pair;
 import org.springframework.core.MethodParameter;
-import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
@@ -16,10 +16,14 @@ import reactor.core.publisher.Mono;
 
 import java.util.Base64;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class EnrichAnnotationMethodArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private static final Map<String, Pair<String,Class<?>>> MAP_TYPE_TO_PAIR = Map.ofEntries(
+            Map.entry("test-a",new Pair<>("X-ENRICH-A",TestDto.class)),
+            Map.entry("test-b",new Pair<>("X-ENRICH-B",EnrichedGreetingDto.class)));
+
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -35,21 +39,16 @@ public class EnrichAnnotationMethodArgumentResolver implements HandlerMethodArgu
                                         ServerWebExchange serverWebExchange) {
 
         ServerHttpRequest serverHttpRequest = serverWebExchange.getRequest();
-        Map<String, String> headers = serverHttpRequest.getHeaders().toSingleValueMap().entrySet().stream()
-                .filter(x -> x.getKey().startsWith("X-ENRICH"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        log.info("This is headers {}",headers);
-        Enrichment enrichment = getObjectFromJson(getJson(headers.get("X-ENRICH-A")));
+        String type = methodParameter.getParameterAnnotation(Enrich.class).type();
+        String header = serverHttpRequest.getHeaders().get(MAP_TYPE_TO_PAIR.get(type).getValue0()).get(0);
+        Enrichment enrichment = getObjectFromJson(header,type);
         return Mono.just(enrichment);
     }
 
     @SneakyThrows
-    private Enrichment getObjectFromJson(String json){
-        return objectMapper.readValue(json, TestDto.class);
+    private Enrichment getObjectFromJson(String json, String type) {
+        byte[] decodedBytes = Base64.getDecoder().decode(json);
+        return (Enrichment) objectMapper.readValue(new String(decodedBytes), MAP_TYPE_TO_PAIR.get(type).getValue1());
     }
 
-    private static String getJson(String encodedString){
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
-        return  new String(decodedBytes);
-    }
 }
