@@ -1,5 +1,6 @@
 package com.example.webfluxfilter.controller;
 
+import com.example.webfluxfilter.annotation.Enrich;
 import com.example.webfluxfilter.dto.TestDto;
 import com.example.webfluxfilter.service.GreetingService;
 import lombok.AllArgsConstructor;
@@ -19,8 +20,8 @@ public class GreetingController {
     private final GreetingService greetingService;
 
     @GetMapping("greeting/{name}")
-    public Mono<TestDto> getName(@PathVariable String name) {
-        return greetingService.getGreeting(name, null);
+    public Mono<TestDto> getName(@PathVariable String name, @Enrich TestDto testDto) {
+        return greetingService.getGreeting(name, testDto);
     }
 
 
