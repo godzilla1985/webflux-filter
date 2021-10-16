@@ -15,6 +15,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -40,7 +41,12 @@ public class EnrichAnnotationMethodArgumentResolver implements HandlerMethodArgu
 
         ServerHttpRequest serverHttpRequest = serverWebExchange.getRequest();
         String type = methodParameter.getParameterAnnotation(Enrich.class).type();
-        String header = serverHttpRequest.getHeaders().get(MAP_TYPE_TO_PAIR.get(type).getValue0()).get(0);
+        List<String> headerContent = serverHttpRequest.getHeaders().get(MAP_TYPE_TO_PAIR.get(type).getValue0());
+        if(headerContent==null){
+            throw new RuntimeException("The value of the header "+MAP_TYPE_TO_PAIR.get(type).getValue0()+" is empty." +
+                    "Please care about that the value is filled.");
+        }
+        String header = headerContent.get(0);
         Enrichment enrichment = getObjectFromJson(header,type);
         return Mono.just(enrichment);
     }
