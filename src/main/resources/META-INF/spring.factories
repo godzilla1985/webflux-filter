@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    com.example.webfluxfilter.config.WebFluxFilterConfig,\
+    com.example.webfluxfilter.config.WebConfig

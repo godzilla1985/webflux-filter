@@ -6,14 +6,11 @@ import com.example.webfluxfilter.dto.TestDtoA;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
-
 public interface GreetingService {
 
-    Mono<TestDtoA> getGreeting(String name);
+    Mono<Enrichment> getGreetingThroughDataBinding(String name, TestDtoA testDto, EnrichedGreetingDto enrichedGreetingDto);
 
-    Mono<EnrichedGreetingDto> getEnrichedGreetingDto(String name);
 
-    Flux<Enrichment> getAllEnrichments();
+    Flux<Enrichment> getAllEnrichmentsThroughWebFilterReactorContext();
 
 }
