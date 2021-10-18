@@ -2,17 +2,13 @@ package com.example.webfluxfilter.service;
 
 import com.example.webfluxfilter.dto.EnrichedGreetingDto;
 import com.example.webfluxfilter.dto.Enrichment;
-import com.example.webfluxfilter.dto.TestDtoA;
-import reactor.core.publisher.Flux;
+import com.example.webfluxfilter.dto.TestDto;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 public interface GreetingService {
 
-    Mono<TestDtoA> getGreeting(String name);
+    Mono<Enrichment> getGreeting(String name, TestDto testDto, EnrichedGreetingDto enrichedGreetingDto);
 
-    Mono<EnrichedGreetingDto> getEnrichedGreetingDto(String name);
 
     Flux<Enrichment> getAllEnrichments();
 
