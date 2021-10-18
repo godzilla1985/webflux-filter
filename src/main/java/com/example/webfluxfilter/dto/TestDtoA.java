@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TestDto implements Enrichment{
+public class TestDtoA implements Enrichment{
 
     private boolean status;
     private String name;

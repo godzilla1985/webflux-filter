@@ -3,7 +3,7 @@ package com.example.webfluxfilter.annotation;
 import com.example.webfluxfilter.constant.Type;
 import com.example.webfluxfilter.dto.EnrichedGreetingDto;
 import com.example.webfluxfilter.dto.Enrichment;
-import com.example.webfluxfilter.dto.TestDto;
+import com.example.webfluxfilter.dto.TestDtoA;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class EnrichAnnotationMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final Map<Type, Pair<String, Class<?>>> MAP_TYPE_TO_PAIR = Map.ofEntries(
-            Map.entry(Type.TEST_DTO, new Pair<>("X-ENRICH-A", TestDto.class)),
+            Map.entry(Type.TEST_DTO, new Pair<>("X-ENRICH-A", TestDtoA.class)),
             Map.entry(Type.ENRICHED_GREETING_DTO, new Pair<>("X-ENRICH-B", EnrichedGreetingDto.class)));
 
 

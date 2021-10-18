@@ -7,7 +7,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 
 @Configuration
-@ConditionalOnProperty
+@ConditionalOnProperty(name = "enrichment.databinding.enabled",havingValue = "true")
 public class WebConfig implements WebFluxConfigurer {
 
     @Override
