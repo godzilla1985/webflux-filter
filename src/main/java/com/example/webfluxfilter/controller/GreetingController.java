@@ -1,6 +1,7 @@
 package com.example.webfluxfilter.controller;
 
 import com.example.webfluxfilter.annotation.Enrich;
+import com.example.webfluxfilter.constant.Type;
 import com.example.webfluxfilter.dto.EnrichedGreetingDto;
 import com.example.webfluxfilter.dto.Enrichment;
 import com.example.webfluxfilter.dto.TestDto;
@@ -25,8 +26,8 @@ public class GreetingController {
 
     @GetMapping("greeting/{name}")
     public Mono<Enrichment> getName(@PathVariable String name,
-                                    @Enrich(type = "test-a") TestDto testDto,
-                                    @Enrich(type = "test-b")EnrichedGreetingDto enrichedGreetingDto) {
+                                    @Enrich(type = Type.TEST_DTO) TestDto testDto,
+                                    @Enrich(type = Type.ENRICHED_GREETING_DTO)EnrichedGreetingDto enrichedGreetingDto) {
         return greetingService.getGreeting(name, testDto, enrichedGreetingDto);
     }
 
